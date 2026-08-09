@@ -28,6 +28,33 @@ Originally built as a heavy enterprise microservice architecture, the system has
 
 ---
 
+## Folder Structure
+
+```bash
+jobbernaut/
+├── services/
+│   ├── tabs/                 # The "Tabs" Domain (Job Tracking & UI)
+│   │   ├── frontend/         # React + Vite
+│   │   │   ├── package.json
+│   │   │   └── vite.config.ts
+│   │   └── backend/          # Hono + Drizzle (API Router)
+│   │       ├── package.json
+│   │       └── wrangler.toml
+│   │
+│   ├── tailor/               # The AI Engine Pod
+│   │   ├── main.py
+│   │   └── requirements.txt
+│   │
+│   └── render/               # The PDF Engine Pod (Typst)
+│       ├── main.py
+│       └── requirements.txt
+│
+├── package.json              # Root workspace config
+└── README.md
+```
+
+---
+
 ## 🧩 System Architecture
 
 The architecture is strictly divided into **5 decoupled components** to ensure stability, ease of testing, fault tolerance, and zero-maintenance scaling.
