@@ -37,7 +37,7 @@ jobbernaut/
 │   │   ├── frontend/        # React + Vite (SPA UI)
 │   │   └── backend/         # Hono + Drizzle (API Router)
 │   │
-│   └── tailor/
+│   └── tailor/              # The "Tailor" Domain (Tailoring & Rendering)
 │       ├── main/            # Python + LangGraph (AI Pod)
 │       └── render/          # Python + Typst (PDF Pod)
 │
