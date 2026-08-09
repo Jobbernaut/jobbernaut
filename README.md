@@ -33,23 +33,15 @@ Originally built as a heavy enterprise microservice architecture, the system has
 ```bash
 jobbernaut/
 ├── services/
-│   ├── tabs/                 # The "Tabs" Domain (Job Tracking & UI)
-│   │   ├── frontend/         # React + Vite
-│   │   │   ├── package.json
-│   │   │   └── vite.config.ts
-│   │   └── backend/          # Hono + Drizzle (API Router)
-│   │       ├── package.json
-│   │       └── wrangler.toml
+│   ├── tabs/                # The "Tabs" Domain (Job Tracking & UI)
+│   │   ├── frontend/        # React + Vite (SPA UI)
+│   │   └── backend/         # Hono + Drizzle (API Router)
 │   │
-│   ├── tailor/               # The AI Engine Pod
-│   │   ├── main.py
-│   │   └── requirements.txt
-│   │
-│   └── render/               # The PDF Engine Pod (Typst)
-│       ├── main.py
-│       └── requirements.txt
+│   └── tailor/
+│       ├── main/            # Python + LangGraph (AI Pod)
+│       └── render/          # Python + Typst (PDF Pod)
 │
-├── package.json              # Root workspace config
+├── package.json             # Root workspace config
 └── README.md
 ```
 
