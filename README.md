@@ -5,7 +5,7 @@
 
 ---
 
-## 📖 Overview
+## 📖 Overviewz
 
 Jobbernaut is a cloud-native, event-driven platform that automates the most tedious parts of the job search: resume tailoring and document management. 
 
@@ -17,8 +17,8 @@ Originally built as a heavy enterprise microservice architecture, the system has
 
 | Domain | Technology |
 |---|---|
-| **Frontend** | React + Vite (TypeScript) |
-| **API Router** | Hono (TypeScript) |
+| **Frontend** | React + Vite (JavaScript) |
+| **API Router** | Hono (JavaScript) |
 | **Database** | Cloudflare D1 (Serverless SQLite) via Drizzle ORM |
 | **Storage** | Cloudflare R2 (S3-Compatible Object Storage) |
 | **Message Broker** | Cloudflare Queues |
@@ -40,12 +40,6 @@ jobbernaut/
 │   └── tailor/              # The "Tailor" Domain (Tailoring & Rendering)
 │       ├── main/            # Python + LangGraph (AI Pod)
 │       └── render/          # Python + Typst (PDF Pod)
-|
-├── packages/                
-│   └── shared-types/        # (Optional) Shared TS types between web & api
-│       ├── index.ts
-│       └── package.json
-|
 ├── package.json             # Root workspace config
 └── README.md
 ```
@@ -90,7 +84,6 @@ A lightweight, high-speed API gateway that handles CRUD operations, authenticati
 
 * **Hosting:** Cloudflare Workers
 * **Framework:** Hono
-* **Validation:** Zod (with shared TypeScript types for the frontend)
 
 ### 3. Database & Storage (State)
 
