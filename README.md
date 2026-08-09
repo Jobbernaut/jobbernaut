@@ -24,7 +24,7 @@ Originally built as a heavy enterprise microservice architecture, the system has
 | **Message Broker** | Cloudflare Queues |
 | **AI Engine Pod** | Python + FastAPI + LangGraph |
 | **PDF Engine Pod** | Python + FastAPI + Typst |
-| **Infrastructure** | Cloudflare Pages, Workers, and Cloudflare Containers |
+| **Infrastructure** | Cloudflare Pages, Workers, and Cloudflare Containers/Google Cloud Run |
 
 ---
 
@@ -57,7 +57,7 @@ graph TD
     State[("Cloudflare D1 SQL &<br>R2 Object Storage")]
     Queue["Cloudflare Queues"]
     
-    subgraph Microservices ["Microservices (Cloudflare Containers)"]
+    subgraph Microservices ["Microservices (Cloudflare Containers / Google Cloud Run)"]
         LangGraph["LangGraph Pod<br><i>(Python / FastAPI / LLM)</i>"]
         Typst["Typst Pod<br><i>(Python / FastAPI / PDF)</i>"]
     end
@@ -96,14 +96,14 @@ The system's source of truth. Acts as the resilience bridge between decoupled po
 
 A stateless Docker container responsible for LLM orchestration. It accepts the Master Profile and Job Description, runs a LangChain/LangGraph pipeline, and generates raw Typst markup.
 
-* **Hosting:** Cloudflare Containers
+* **Hosting:** Cloudflare Containers / Google Cloud Run
 * **Framework:** Python + FastAPI + LangGraph
 
 ### 5. Typst Pod (PDF Engine)
 
 A stateless Docker container responsible for compiling raw Typst markup into a high-quality PDF. Decoupled from the AI engine to prevent costly LLM re-runs in the event of markup syntax errors.
 
-* **Hosting:** Cloudflare Containers
+* **Hosting:** Cloudflare Containers / Google Cloud Run
 * **Framework:** Python + FastAPI + Typst
 
 ---
@@ -182,7 +182,7 @@ flowchart TD
 ## 🚀 Infrastructure & Deployment Philosophy
 
 * **Zero Vendor Lock-in:** Standardizing on Docker containers for heavy processing and standard SQL/ORM patterns ensures the entire system can be migrated to AWS, GCP, or bare metal with minimal refactoring.
-* **Scale to Zero:** The entire stack (Pages, Workers, D1, R2, Containers) scales down to zero when idle, resulting in near-zero hosting costs for low-traffic or self-hosted deployments.
+* **Scale to Zero:** The entire stack (Pages, Workers, D1, R2, Containers / Cloud Run) scales down to zero when idle, resulting in near-zero hosting costs for low-traffic or self-hosted deployments.
 * **Edge-First:** All routing, database queries, and static UI delivery occur at the Cloudflare edge to deliver instant global response times.
 
 ---
@@ -265,7 +265,7 @@ flowchart LR
 ## 💡 Key Technical Gains from Rescoping
 
 1. **Eliminated "Middleman" Hops:** The old architecture required requests to bounce from client to gateway to backend to director to workers. The new stack places `Hono` at the edge to manage everything directly.
-2. **Cost-Free Idle States:** Moving from dedicated server nodes (`Tabs Backend`, `ReDirector`, `Director`) to Cloudflare Workers and Containers allows the entire platform to **scale to absolute zero** when not actively generating resumes.
+2. **Cost-Free Idle States:** Moving from dedicated server nodes (`Tabs Backend`, `ReDirector`, `Director`) to Cloudflare Workers and Containers / Cloud Run allows the entire platform to **scale to absolute zero** when not actively generating resumes.
 3. **Fault-Tolerant Human-in-the-Loop:** Decoupling `LangGraph` (Typst generation) from `Typst Pod` (PDF compilation) means an invalid markup output from the LLM doesn't waste token credits on retries—users can fix syntax in the UI and directly hit the PDF compiler pod.
 "#;
 
