@@ -40,7 +40,12 @@ jobbernaut/
 │   └── tailor/              # The "Tailor" Domain (Tailoring & Rendering)
 │       ├── main/            # Python + LangGraph (AI Pod)
 │       └── render/          # Python + Typst (PDF Pod)
-│
+|
+├── packages/                
+│   └── shared-types/        # (Optional) Shared TS types between web & api
+│       ├── index.ts
+│       └── package.json
+|
 ├── package.json             # Root workspace config
 └── README.md
 ```
