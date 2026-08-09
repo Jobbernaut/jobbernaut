@@ -198,6 +198,59 @@ npm run dev
 ```
 
 ---
+# 🔄 Architecture Evolution: Jobbernaut Enterprise to Cloudflare-Native
+
+Looking at the original microservice architecture, the rescoping effort significantly cut down operational friction, deployment complexity, and cloud infrastructure costs.
+
+---
+
+## 📊 Comparison: Old Enterprise vs. New Edge Architecture
+
+| Component Domain | Original Enterprise Architecture | New Cloudflare-Native Architecture | Structural & Operational Impact |
+|---|---|---|---|
+| **Entry & Ingress** | Dedicated Gateway (`Jobbernaut ReDirector`) | Direct Worker Route (`Hono API Router`) | **Simplified Routing:** Removed an entire hop/proxy layer. Hono handles routing, CORS, and auth natively at the edge. |
+| **Clients** | Fragmented Clients (`Tabs Frontend`, `Extract Extension`) | Single Unified SPA (`React + Vite on Pages`) | **Consolidated Frontend:** Merged client applications into a single codebase deployed on Cloudflare Pages. |
+| **Data Layer** | Multi-DB setup (`Tabs Database` + `Warehouse S3`) | Edge SQL & S3 (`Cloudflare D1` + `Cloudflare R2`) | **Serverless State:** Standardized on SQLite (`D1`) via Drizzle ORM and standard object storage (`R2`) with zero connection pool management. |
+| **Orchestration** | Complex External Orchestrator (`Jobbernaut Director`) | Event-Driven Queue + State Machine (`D1` + `Cloudflare Queues`) | **Resilient Queue Pattern:** Replaced the dedicated director service with Cloudflare Queues and `D1` application status flags (`PENDING`, `LLM_COMPLETE`, `PDF_FAILED`, `DONE`). |
+| **Processing Pods** | `Tailor Main` + `Tailor Render` Services | `LangGraph Pod` + `Typst Pod` Containers | **Decoupled Execution:** Isolated heavy Python/LLM tasks and PDF compilation into stateless Docker containers, enabling cheap human-in-the-loop retries on syntax errors without re-running LLMs. |
+
+---
+
+## 🏛️ Evolution Diagram: Microservices vs. Unified Edge Stack
+
+```mermaid
+flowchart LR
+    subgraph Old ["Original Enterprise Architecture"]
+        direction TB
+        O1[Multiple FE Apps] --> O2[ReDirector Gateway]
+        O2 --> O3[Tabs Backend]
+        O3 --> O4[Tabs DB & Warehouse]
+        O3 -.-> O5[Jobbernaut Director]
+        O5 --> O6[Tailor Main]
+        O5 --> O7[Tailor Render]
+    end
+
+    subgraph New ["New Cloudflare Edge Stack"]
+        direction TB
+        N1[React SPA on Pages] --> N2[Hono API Worker]
+        N2 <--> N3[(D1 Database & R2 Storage)]
+        N2 --> N4[Cloudflare Queue]
+        N4 --> N5[LangGraph Container Pod]
+        N2 --> N6[Typst Container Pod]
+    end
+
+    Old ====>|Rescoped & Streamlined| New
+
+```
+
+---
+
+## 💡 Key Technical Gains from Rescoping
+
+1. **Eliminated "Middleman" Hops:** The old architecture required requests to bounce from client to gateway to backend to director to workers. The new stack places `Hono` at the edge to manage everything directly.
+2. **Cost-Free Idle States:** Moving from dedicated server nodes (`Tabs Backend`, `ReDirector`, `Director`) to Cloudflare Workers and Containers allows the entire platform to **scale to absolute zero** when not actively generating resumes.
+3. **Fault-Tolerant Human-in-the-Loop:** Decoupling `LangGraph` (Typst generation) from `Typst Pod` (PDF compilation) means an invalid markup output from the LLM doesn't waste token credits on retries—users can fix syntax in the UI and directly hit the PDF compiler pod.
+"#;
 
 ## 📄 License
 
